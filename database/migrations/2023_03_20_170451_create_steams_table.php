@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('steams', function (Blueprint $table) {
-            $table->unsignedBigInteger('appid');
+            $table->id('appid');
             $table->string('name');
         });
     }

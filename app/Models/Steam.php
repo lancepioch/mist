@@ -10,6 +10,8 @@ class Steam extends Model
 {
     use HasFactory, Searchable;
 
+    protected $primaryKey = 'appid';
+
     protected $fillable = ['appid', 'name'];
 
     public function searchableAs()
