@@ -29,6 +29,26 @@ class Row extends Model
         return cache()->remember('steam-games-collection', now()->addMinute(), self::retrieveGames(...))->toArray();
     }
 
+    public function save(array $options = [])
+    {
+        $changes = $this->getDirty();
+        if ($newAppId = $changes['appid']) {
+            $token = [
+                'access_token' => config('mist.tokens.access'),
+                'refresh_token' => config('mist.tokens.refresh'),
+            ];
+
+            $rowN = $this->id + 1;
+            Sheets::setAccessToken($token)
+                ->spreadsheet(config('mist.sheet'))
+                ->range("J$rowN")
+                ->sheet('Steam')
+                ->update([[$newAppId]]);
+        }
+
+        return parent::save($options);
+    }
+
     public static function retrieveGames(): Collection
     {
         $token = [
