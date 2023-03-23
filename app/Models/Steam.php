@@ -23,4 +23,9 @@ class Steam extends Model
     {
         return 'appid';
     }
+
+    public function rows()
+    {
+        return $this->hasMany(Row::class, 'appid');
+    }
 }
