@@ -45,7 +45,7 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
             Tables\Columns\SelectColumn::make('appid')->options(function (...$params) {
                 $row = $params[2]; /** @var Row $row */
                 $options = $row->steam ? [$row->steam->appid => $row->steam->name] : [];
-                $closest = Steam::search($row->name)->take(3)->get();
+                $closest = Steam::search($row->name)->take(5)->get();
                 $options += $closest->mapWithKeys(fn (Steam $steam) => [$steam->appid => $steam->name])->all();
 
                 return $options;
