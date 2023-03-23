@@ -43,7 +43,9 @@ class Row extends Model
         $header = $rows->pull(0);
         $rows = Sheets::collection(header: $header, rows: $rows);
 
-        $rows->map(function ($row) {
+        return $rows
+            ->filter(fn ($row) => !empty($row['name']))
+            ->map(function ($row) {
             $row['used'] = match ($row['used']) {
                 null, '' => null,
                 'TRUE', 'true', true => true,
@@ -52,9 +54,7 @@ class Row extends Model
             };
 
             return $row;
-        });
-
-        return $rows->values();
+        })->values();
     }
 
     protected function newRelatedInstance($class)
