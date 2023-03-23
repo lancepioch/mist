@@ -5,7 +5,6 @@ namespace App\Http\Livewire;
 use App\Models\Row;
 use App\Models\Steam;
 use Filament\Tables;
-use Filament\Tables\Columns\SelectColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
@@ -43,7 +42,7 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
             // Tables\Columns\TextColumn::make('sent_at'),
             Tables\Columns\TextInputColumn::make('appid'),
             Tables\Columns\TextInputColumn::make('appid'),
-            SelectColumn::make('appid')->options(function (...$params) {
+            Tables\Columns\SelectColumn::make('appid')->options(function (...$params) {
                 $row = $params[2]; /** @var Row $row */
                 $options = $row->steam ? [$row->steam->appid => $row->steam->name] : [];
                 $closest = Steam::search($row->name)->take(3)->get();
