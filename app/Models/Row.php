@@ -32,7 +32,7 @@ class Row extends Model
     public function save(array $options = [])
     {
         $changes = $this->getDirty();
-        if ($newAppId = $changes['appid']) {
+        if ($newAppId = $changes['appid'] ?? null) {
             $token = [
                 'access_token' => config('mist.tokens.access'),
                 'refresh_token' => config('mist.tokens.refresh'),
