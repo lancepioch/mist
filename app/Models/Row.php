@@ -11,6 +11,8 @@ class Row extends Model
 {
     use \Sushi\Sushi;
 
+    protected $hidden = ['key'];
+
     protected $schema = [
         'id' => 'integer',
         'appid' => 'integer',
