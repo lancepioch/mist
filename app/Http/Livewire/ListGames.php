@@ -49,8 +49,8 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
                 $options += $closest->mapWithKeys(fn (Steam $steam) => [$steam->appid => $steam->name])->all();
 
                 return $options;
-            }),
-            Tables\Columns\TextColumn::make('steam.name'),
+            })->toggleable(true, true)->name('Select Steam Appid'),
+            Tables\Columns\TextColumn::make('steam.name')->wrap()->hidden(),
         ];
     }
 
