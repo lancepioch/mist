@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use ArrayAccess;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
@@ -65,18 +68,29 @@ class Row extends Model
         $header = $rows->pull(0);
         $rows = Sheets::collection(header: $header, rows: $rows);
 
-        return $rows
+        /** @var Collection $games */
+        $games = $rows
             ->filter(fn ($row) => !empty($row['name']))
-            ->map(function ($row) {
-            $row['used'] = match ($row['used']) {
-                null, '' => null,
-                'TRUE', 'true', true => true,
-                'FALSE', 'false', false => false,
-                default => null,
-            };
+            ->map(self::convertUsedColumnToBool(...))
+            ->map(self::convertColumnsToDatetime(...))
+            ->map(self::convertAllFalseyValuesToNull(...));
 
-            return $row;
-        })->values();
+        $bestCount = 0;
+        $bestIndex = $games->reduce(function ($carry, $item, $key) use (&$bestCount) {
+            if (($count = $item->filter()->count()) > $bestCount) {
+                $bestCount = $count;
+                return $key;
+            }
+
+            return $carry;
+        }, 0);
+
+        $games = $games->values();
+
+        // Swap first row with most filled out row
+        [$games[0], $games[$bestIndex]] = [$games[$bestIndex], $games[0]];
+
+        return $games;
     }
 
     public static function convertUsedColumnToBool(ArrayAccess $array): ArrayAccess
