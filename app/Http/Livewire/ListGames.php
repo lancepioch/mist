@@ -20,28 +20,19 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
     protected function getTableColumns(): array
     {
         return [
-            // Tables\Columns\ImageColumn::make('author.avatar')->size(40)->circular(),
-            // Tables\Columns\TextColumn::make('author.name'),
-            /*Tables\Columns\BadgeColumn::make('status')
-                ->colors([
-                    'danger' => 'draft',
-                    'warning' => 'reviewing',
-                    'success' => 'published',
-                ]), // */
-
-            Tables\Columns\TextColumn::make('id'),
-            Tables\Columns\TextColumn::make('name'),
-            // Tables\Columns\TextColumn::make('key'),
-            Tables\Columns\TextColumn::make('acquired_at'),
-            Tables\Columns\IconColumn::make('used')->boolean()
-                ->trueColor('primary')
-                ->falseColor('warning'),
-            Tables\Columns\TextColumn::make('source'),
-            Tables\Columns\TextColumn::make('price'),
-            // Tables\Columns\TextColumn::make('sent_to'),
-            // Tables\Columns\TextColumn::make('sent_at'),
-            Tables\Columns\TextInputColumn::make('appid'),
-            Tables\Columns\TextInputColumn::make('appid'),
+            Tables\Columns\TextColumn::make('id')->hidden(),
+            Tables\Columns\ImageColumn::make('steam.banner')->width(184)->height(69),
+            Tables\Columns\TextColumn::make('name')->wrap()->sortable()->searchable()
+                ->url(fn (...$params) => "https://steamcommunity.com/app/{$params[2]->appid}"),
+            Tables\Columns\TextColumn::make('acquired_at')->date()
+                ->sortable(query: function (Builder $query, string $direction): Builder {
+                return $query
+                    ->orderBy('acquired_at', $direction);
+            }),
+            Tables\Columns\IconColumn::make('available')->boolean(),
+            Tables\Columns\TextColumn::make('source')->wrap()->toggleable(true, true),
+            Tables\Columns\TextColumn::make('price')->toggleable(true, true),
+            Tables\Columns\TextColumn::make('sent_at')->hidden(),
             Tables\Columns\SelectColumn::make('appid')->options(function (...$params) {
                 $row = $params[2]; /** @var Row $row */
                 $options = $row->steam ? [$row->steam->appid => $row->steam->name] : [];
