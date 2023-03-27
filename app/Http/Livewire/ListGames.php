@@ -25,16 +25,14 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
             Tables\Columns\TextColumn::make('name')->wrap()->sortable()->searchable()
                 ->url(fn (...$params) => "https://steamcommunity.com/app/{$params[2]->appid}"),
             Tables\Columns\TextColumn::make('acquired_at')->date()
-                ->sortable(query: function (Builder $query, string $direction): Builder {
-                return $query
-                    ->orderBy('acquired_at', $direction);
-            }),
+                ->sortable(query: fn (Builder $query, string $direction): Builder =>
+                    $query->orderBy('acquired_at', $direction)),
             Tables\Columns\IconColumn::make('available')->boolean(),
             Tables\Columns\TextColumn::make('source')->wrap()->toggleable(true, true),
             Tables\Columns\TextColumn::make('price')->toggleable(true, true),
             Tables\Columns\TextColumn::make('sent_at')->hidden(),
             Tables\Columns\SelectColumn::make('appid')->options(function (...$params) {
-                $row = $params[2]; /** @var Row $row */
+                $row = $params[2]; /** @var Row $row why can't I typehint this  ^^^^^^^^^^ */
                 $options = $row->steam ? [$row->steam->appid => $row->steam->name] : [];
                 $closest = Steam::search($row->name)->take(5)->get();
                 $options += $closest->mapWithKeys(fn (Steam $steam) => [$steam->appid => $steam->name])->all();
