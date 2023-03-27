@@ -57,6 +57,10 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
     protected function getTableFilters(): array
     {
         return [
+            Tables\Filters\Filter::make('available')->default()
+                ->query(fn (Builder $query): Builder => $query->where('used', false)),
+            Tables\Filters\Filter::make('unavailable')
+                ->query(fn (Builder $query): Builder => $query->where('used', true)),
             Tables\Filters\Filter::make('associated')
                 ->query(fn (Builder $query): Builder => $query->whereNot('appid', '', 0)),
             Tables\Filters\Filter::make('unassociated')
