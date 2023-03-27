@@ -68,6 +68,16 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
         ];
     }
 
+    protected function getDefaultTableSortColumn(): ?string
+    {
+        return 'name';
+    }
+
+    protected function getDefaultTableSortDirection(): ?string
+    {
+        return 'asc';
+    }
+
     public function render()
     {
         return view('livewire.list-games');
