@@ -11,14 +11,9 @@ class Row extends Model
 {
     use \Sushi\Sushi;
 
-    protected $hidden = ['key'];
-
-    protected $schema = [
-        'id' => 'integer',
-        'appid' => 'integer',
-        'sent_at' => 'date',
-        'acquired_at' => 'date',
-        'used' => 'boolean',
+    protected $hidden = [
+        'key',
+        'sent_to',
     ];
 
     public function available(): Attribute
