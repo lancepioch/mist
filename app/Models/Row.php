@@ -21,6 +21,11 @@ class Row extends Model
         'used' => 'boolean',
     ];
 
+    public function available(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->used === null ? null : !$this->used);
+    }
+
     public function steam(): BelongsTo
     {
         return $this->belongsTo(Steam::class, 'appid', 'appid', 'steam');
