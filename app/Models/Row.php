@@ -79,6 +79,45 @@ class Row extends Model
         })->values();
     }
 
+    public static function convertUsedColumnToBool(ArrayAccess $array): ArrayAccess
+    {
+        $array['used'] = match ($array['used']) {
+            'TRUE', 'true', true => true,
+            'FALSE', 'false', false => false,
+            default => null,
+        };
+
+        return $array;
+    }
+
+    public static function convertColumnsToDatetime(ArrayAccess $array): ArrayAccess
+    {
+        if ($array['acquired_at']) {
+            $array['acquired_at'] = Carbon::createFromFormat('n/j/Y', $array['acquired_at'])->setTime(0, 0, 0);
+        }
+
+        if ($array['sent_at']) {
+            $array['sent_at'] = Carbon::createFromFormat('n/j/Y', $array['sent_at'])->setTime(0, 0, 0);
+        }
+
+        return $array;
+    }
+
+    public static function convertAllFalseyValuesToNull(ArrayAccess $array): ArrayAccess
+    {
+        foreach ($array as $key => $value) {
+            if (is_bool($value)) {
+                continue;
+            }
+
+            if (empty($array[$key])) {
+                $array[$key] = null;
+            }
+        }
+
+        return $array;
+    }
+
     protected function newRelatedInstance($class)
     {
         return tap(new $class, function ($instance) use ($class) {
