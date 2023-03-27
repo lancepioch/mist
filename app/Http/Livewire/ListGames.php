@@ -8,7 +8,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
-class ListGames extends Component  implements Tables\Contracts\HasTable
+class ListGames extends Component implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
 
@@ -25,8 +25,7 @@ class ListGames extends Component  implements Tables\Contracts\HasTable
             Tables\Columns\TextColumn::make('name')->wrap()->sortable()->searchable()
                 ->url(fn (...$params) => "https://steamcommunity.com/app/{$params[2]->appid}"),
             Tables\Columns\TextColumn::make('acquired_at')->date()
-                ->sortable(query: fn (Builder $query, string $direction): Builder =>
-                    $query->orderBy('acquired_at', $direction)),
+                ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('acquired_at', $direction)),
             Tables\Columns\IconColumn::make('available')->boolean(),
             Tables\Columns\TextColumn::make('source')->wrap()->toggleable(true, true),
             Tables\Columns\TextColumn::make('price')->toggleable(true, true),

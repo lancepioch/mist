@@ -21,7 +21,7 @@ class Row extends Model
 
     public function available(): Attribute
     {
-        return Attribute::make(get: fn () => $this->used === null ? null : !$this->used);
+        return Attribute::make(get: fn () => $this->used === null ? null : ! $this->used);
     }
 
     public function steam(): BelongsTo
@@ -70,7 +70,7 @@ class Row extends Model
 
         /** @var Collection $games */
         $games = $rows
-            ->filter(fn ($row) => !empty($row['name']))
+            ->filter(fn ($row) => ! empty($row['name']))
             ->map(self::convertUsedColumnToBool(...))
             ->map(self::convertColumnsToDatetime(...))
             ->map(self::convertAllFalseyValuesToNull(...));
@@ -79,6 +79,7 @@ class Row extends Model
         $bestIndex = $games->reduce(function ($carry, $item, $key) use (&$bestCount) {
             if (($count = $item->filter()->count()) > $bestCount) {
                 $bestCount = $count;
+
                 return $key;
             }
 
@@ -135,7 +136,7 @@ class Row extends Model
     protected function newRelatedInstance($class)
     {
         return tap(new $class, function ($instance) use ($class) {
-            if (!$instance->getConnectionName()) {
+            if (! $instance->getConnectionName()) {
                 $instance->setConnection($this->getConnectionResolver()->getDefaultConnection());
                 parent::newRelatedInstance($class);
             }
