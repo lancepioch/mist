@@ -51,12 +51,12 @@ class ListGames extends Component implements Tables\Contracts\HasTable
 
     protected function getDefaultTableSortColumn(): ?string
     {
-        return 'name';
+        return 'acquired_at';
     }
 
     protected function getDefaultTableSortDirection(): ?string
     {
-        return 'asc';
+        return 'desc';
     }
 
     public function render()
