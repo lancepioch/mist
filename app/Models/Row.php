@@ -133,6 +133,16 @@ class Row extends Model
         return $array;
     }
 
+    public static function appidOptions(...$params)
+    {
+        $row = $params[2]; /** @var Row $row */
+        $options = $row->steam ? [$row->steam->appid => $row->steam->name] : [];
+        $closest = Steam::search($row->name)->take(5)->get();
+        $options += $closest->mapWithKeys(fn (Steam $steam) => [$steam->appid => $steam->name])->all();
+
+        return $options;
+    }
+
     protected function newRelatedInstance($class)
     {
         return tap(new $class, function ($instance) use ($class) {

@@ -30,14 +30,7 @@ class ListGames extends Component implements Tables\Contracts\HasTable
             Tables\Columns\TextColumn::make('source')->wrap()->toggleable(true, true),
             Tables\Columns\TextColumn::make('price')->toggleable(true, true),
             Tables\Columns\TextColumn::make('sent_at')->hidden(),
-            Tables\Columns\SelectColumn::make('appid')->options(function (...$params) {
-                $row = $params[2]; /** @var Row $row why can't I typehint this  ^^^^^^^^^^ */
-                $options = $row->steam ? [$row->steam->appid => $row->steam->name] : [];
-                $closest = Steam::search($row->name)->take(5)->get();
-                $options += $closest->mapWithKeys(fn (Steam $steam) => [$steam->appid => $steam->name])->all();
-
-                return $options;
-            })->toggleable(true, true),
+            Tables\Columns\SelectColumn::make('appid')->options(Row::appidOptions(...))->toggleable(true, true),
             Tables\Columns\TextColumn::make('steam.name')->wrap()->hidden(),
         ];
     }
