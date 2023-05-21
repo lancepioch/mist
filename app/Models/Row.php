@@ -14,6 +14,8 @@ class Row extends Model
 {
     use \Sushi\Sushi;
 
+    public const CACHE_KEY = 'steam-games-collection';
+
     protected $hidden = [
         'key',
         'sent_to',
@@ -31,7 +33,22 @@ class Row extends Model
 
     public function getRows()
     {
-        return cache()->remember('steam-games-collection', now()->addMinute(), self::retrieveGames(...))->toArray();
+        return self::getRowsFromCache();
+    }
+
+    public static function getRowsFromCache(): array
+    {
+        return cache()->remember(self::CACHE_KEY, now()->addMinute(), self::retrieveGames(...));
+    }
+
+    public static function setCacheRow($id, $key, $value)
+    {
+        $rows = self::getRowsFromCache();
+        $index = collect($rows)->search(fn ($item, $k) => $item['id'] == $id);
+
+        $rows[$index][$key] = $value;
+
+        return cache()->put(self::CACHE_KEY, $rows, now()->addMinute());
     }
 
     public function save(array $options = [])
@@ -49,12 +66,14 @@ class Row extends Model
                 ->range("J$rowN")
                 ->sheet('Steam')
                 ->update([[$newAppId]]);
+
+            self::setCacheRow($this->id, 'appid', $newAppId);
         }
 
         return parent::save($options);
     }
 
-    public static function retrieveGames(): Collection
+    public static function retrieveGames(): array
     {
         $token = [
             'access_token' => config('mist.tokens.access'),
@@ -91,7 +110,7 @@ class Row extends Model
         // Swap first row with most filled out row
         [$games[0], $games[$bestIndex]] = [$games[$bestIndex], $games[0]];
 
-        return $games;
+        return $games->toArray();
     }
 
     public static function convertUsedColumnToBool(ArrayAccess $array): ArrayAccess
