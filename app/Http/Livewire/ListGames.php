@@ -22,7 +22,7 @@ class ListGames extends Component implements Tables\Contracts\HasTable
             Tables\Columns\TextColumn::make('id')->sortable()->hidden(),
             Tables\Columns\ImageColumn::make('steam.banner')->width(184)->height(69)->label(''),
             Tables\Columns\TextColumn::make('name')->wrap()->sortable()->searchable()
-                ->url(fn (...$params) => "https://steamcommunity.com/app/{$params[2]->appid}"),
+                ->url(fn (...$params) => isset($params[2]->appid) ? "https://steamcommunity.com/app/{$params[2]->appid}" : ''),
             Tables\Columns\TextColumn::make('acquired_at')->date()
                 ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('acquired_at', $direction)),
             Tables\Columns\IconColumn::make('available')->boolean(),
