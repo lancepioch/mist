@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Revolution\Google\Sheets\Facades\Sheets;
+use Sushi\Sushi;
 
 class Row extends Model
 {
-    use \Sushi\Sushi;
+    use Sushi;
 
     public const CACHE_KEY = 'steam-games-collection';
 
