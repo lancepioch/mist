@@ -18,7 +18,7 @@ class ListGames extends Component implements Tables\Contracts\HasTable
 
     protected function getTableColumns(): array
     {
-        return [
+        $rows = [
             Tables\Columns\TextColumn::make('id')->sortable()->hidden(),
             Tables\Columns\ImageColumn::make('steam.banner')->width(184)->height(69)->label(''),
             Tables\Columns\TextColumn::make('name')->wrap()->sortable()->searchable()
@@ -26,15 +26,24 @@ class ListGames extends Component implements Tables\Contracts\HasTable
             Tables\Columns\TextColumn::make('acquired_at')->date()
                 ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('acquired_at', $direction)),
             Tables\Columns\IconColumn::make('available')->boolean(),
+            Tables\Columns\TextColumn::make('price')->sortable()->toggleable(true, true),
+        ];
+
+        $adminRows = [
             Tables\Columns\TextColumn::make('source')->wrap()->toggleable(true, true),
-            Tables\Columns\TextColumn::make('price')->sortable()
-                ->toggleable(true, true),
-            Tables\Columns\TextColumn::make('sent_at')->hidden(),
             Tables\Columns\SelectColumn::make('appid')->label('Steam Pairing')->sortable()
                 ->options(Row::appidOptions(...))
                 ->toggleable(true, true),
             Tables\Columns\TextColumn::make('steam.name')->wrap()->hidden(),
+            Tables\Columns\TextColumn::make('sent_at')->hidden(),
+            Tables\Columns\TextColumn::make('sent_to')->hidden(),
         ];
+
+        if (auth()->check()) {
+            array_push($rows, ...$adminRows);
+        }
+
+        return $rows;
     }
 
     protected function getTableFilters(): array
