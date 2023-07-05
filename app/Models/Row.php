@@ -56,7 +56,7 @@ class Row extends Model
         $changes = $this->getDirty();
         if ($newAppId = $changes['appid'] ?? null) {
             $token = [
-                'access_token' => config('mist.tokens.access'),
+                'access_token' => '',
                 'refresh_token' => config('mist.tokens.refresh'),
             ];
 
@@ -76,7 +76,7 @@ class Row extends Model
     public static function retrieveGames(): array
     {
         $token = [
-            'access_token' => config('mist.tokens.access'),
+            'access_token' => '',
             'refresh_token' => config('mist.tokens.refresh'),
         ];
 
