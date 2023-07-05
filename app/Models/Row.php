@@ -82,7 +82,8 @@ class Row extends Model
 
         $rows = Sheets::setAccessToken($token)
             ->spreadsheet(config('mist.sheet'))
-            ->sheet('Steam')->get();
+            ->sheet('Steam')
+            ->get();
 
         $header = $rows->pull(0);
         $rows = Sheets::collection(header: $header, rows: $rows);
